@@ -7,11 +7,13 @@ export default function Print() {
   const [company, setCompany] = useState<any>({});
   const [classification, setClassification] = useState<any>(null);
   const [sections, setSections] = useState<string[]>([]);
+  const [eligibility, setEligibility] = useState<any>({});
 
   useEffect(() => {
     setAnswers(storage.getQuestionnaire());
     setCompany(storage.getCompanyProfile() || {});
     setClassification(storage.getClassification());
+    setEligibility(storage.getDisclosureEligibility() || {});
     try {
       const url = new URL(window.location.href);
       const raw = url.searchParams.get('sections');
@@ -25,6 +27,48 @@ export default function Print() {
   } as ApplicabilityProfile : null;
 
   const scoring = useMemo(() => profile ? scoreAnswers(answers, profile) : null, [answers, profile]);
+
+  const formatEligibility = (id: string, value: string | undefined) => {
+    if (!value) return 'N/A';
+    switch (id) {
+      case 'entity-type':
+        return value === 'for-profit' ? 'For-profit'
+          : value === 'not-for-profit' ? 'Not-for-profit'
+          : value === 'super-or-financial' ? 'Superannuation fund / Financial institution'
+          : 'Other';
+      case 'chapter-2m':
+        return value === 'yes' ? 'Yes' : value === 'no' ? 'No' : 'Unsure';
+      case 'revenue-2025':
+        return value === 'lt-50m' ? 'Less than $50,000,000'
+          : value === '50m-199999999' ? '$50,000,000 to $199,999,999'
+          : value === '200m-499999999' ? '$200,000,000 to $499,999,999'
+          : '$500,000,000 or more';
+      case 'assets-2025':
+        return value === 'lt-25m' ? 'Less than $25,000,000'
+          : value === '25m-99999999' ? '$25,000,000 to $99,999,999'
+          : value === '500m-999999999' ? '$500,000,000 to $999,999,999'
+          : '$1,000,000,000 or more';
+      case 'employees-2025':
+        return value === 'lt-100' ? 'Less than 100'
+          : value === '100-249' ? '100 to 249'
+          : value === '250-499' ? '250 to 499'
+          : '500 or more';
+      case 'nger-reporter':
+      case 'aum-over-5b':
+        return value === 'yes' ? 'Yes' : 'No';
+      default:
+        return value;
+    }
+  };
+
+  const gapsBySection: Array<{ section: string; count: number }> = useMemo(() => {
+    if (!scoring) return [];
+    const counts: Record<string, number> = {};
+    (scoring.gapsDetailed || []).forEach(g => {
+      counts[g.section] = (counts[g.section] || 0) + 1;
+    });
+    return Object.entries(counts).map(([section, count]) => ({ section, count }));
+  }, [scoring]);
 
   return (
     <div className="p-8 space-y-8" style={{ overflowWrap: 'anywhere' }}>
@@ -50,9 +94,55 @@ export default function Print() {
           <div className="grid grid-cols-2 gap-2 text-sm">
             <div><strong>Company:</strong> {company?.companyName || 'N/A'}</div>
             <div><strong>Industry:</strong> {company?.industry || 'N/A'}</div>
+            <div><strong>Entity Type:</strong> {formatEligibility('entity-type', eligibility['entity-type'])}</div>
+            <div><strong>Chapter 2M (Corps Act):</strong> {formatEligibility('chapter-2m', eligibility['chapter-2m'])}</div>
+            <div><strong>Revenue (latest FY):</strong> {formatEligibility('revenue-2025', eligibility['revenue-2025'])}</div>
+            <div><strong>Gross Assets (end FY):</strong> {formatEligibility('assets-2025', eligibility['assets-2025'])}</div>
+            <div><strong>Employees (FTE):</strong> {formatEligibility('employees-2025', eligibility['employees-2025'])}</div>
+            <div><strong>NGER Reporter:</strong> {formatEligibility('nger-reporter', eligibility['nger-reporter'])}</div>
+            <div><strong>AUM > $5B (super/financial):</strong> {formatEligibility('aum-over-5b', eligibility['aum-over-5b'])}</div>
             <div><strong>Group classification:</strong> {profile ? (profile.entityGroup === 'voluntary' ? 'Voluntary only' : `Group ${profile.entityGroup}`) : 'N/A'}</div>
             <div><strong>Mandatory reporting start date:</strong> {classification?.reportingStart || 'N/A'}</div>
+            <div><strong>Generated:</strong> {new Date().toLocaleDateString()}</div>
           </div>
+
+          {/* Readiness overview */}
+          {scoring && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+              <div className="text-center p-3 rounded-lg border" style={{ backgroundColor: '#fee2e2', borderColor: '#fecaca' }}>
+                <div className="text-2xl font-bold" style={{ color: '#dc2626' }}>{scoring.gapGroups.High.length}</div>
+                <div className="text-sm" style={{ color: '#991b1b' }}>High Priority Gaps</div>
+              </div>
+              <div className="text-center p-3 rounded-lg border" style={{ backgroundColor: '#fef3c7', borderColor: '#fde68a' }}>
+                <div className="text-2xl font-bold" style={{ color: '#b45309' }}>{scoring.gapGroups.Medium.length}</div>
+                <div className="text-sm" style={{ color: '#92400e' }}>Medium Priority Gaps</div>
+              </div>
+              <div className="text-center p-3 rounded-lg border" style={{ backgroundColor: '#ecfdf5', borderColor: '#bbf7d0' }}>
+                <div className="text-2xl font-bold" style={{ color: '#047857' }}>{scoring.gapGroups.Low.length}</div>
+                <div className="text-sm" style={{ color: '#065f46' }}>Low Priority Gaps</div>
+              </div>
+            </div>
+          )}
+
+          {/* Gaps per pillar */}
+          {gapsBySection.length > 0 && (
+            <div className="mt-4">
+              <h3 className="font-semibold mb-2">Gaps by Pillar</h3>
+              <table className="w-full text-sm border-collapse">
+                <thead>
+                  <tr className="border-b"><th className="text-left p-2">Pillar</th><th className="text-left p-2">Total gaps</th></tr>
+                </thead>
+                <tbody>
+                  {gapsBySection.map(row => (
+                    <tr key={row.section} className="border-b">
+                      <td className="p-2">{row.section}</td>
+                      <td className="p-2">{row.count}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </section>
       )}
 
