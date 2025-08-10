@@ -91,11 +91,6 @@ export default function Dashboard() {
             Track your Assessment progress and identify gaps in your climate disclosure readiness
           </p>
         </div>
-        <div className="pt-2">
-          <Button variant="sustainability" onClick={() => navigate('/export')}>
-            Go to Export
-          </Button>
-        </div>
       </div>
 
       {/* Progress Overview */}
@@ -135,30 +130,36 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* AASB S2 Classification Summary */}
+      {/* AASB S2 Classification Summary + Export button */}
       {userData?.classification && (
-        <Card className="shadow-card border-green-200 bg-green-50">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-green-900">
-              <Shield className="w-5 h-5" />
-              AASB S2 Classification
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div className="flex items-center gap-2">
-                <Badge variant={userData.classification.group !== 'not-required' ? "default" : "secondary"}>
-                  {userData.classification.group === 'not-required' ? 'Not Required' : `Group ${userData.classification.group}`}
-                </Badge>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+          <Card className="shadow-card border-green-200 bg-green-50 md:col-span-2">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-green-900">
+                <Shield className="w-5 h-5" />
+                AASB S2 Classification
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div className="flex items-center gap-2">
+                  <Badge variant={userData.classification.group !== 'not-required' ? "default" : "secondary"}>
+                    {userData.classification.group === 'not-required' ? 'Not Required' : `Group ${userData.classification.group}`}
+                  </Badge>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-green-600" />
+                  <span>Reporting Start: {userData.classification.reportingStart}</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-green-600" />
-                <span>Reporting Start: {userData.classification.reportingStart}</span>
-              </div>
-              
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+          <div className="flex items-center justify-center">
+            <Button variant="sustainability" size="lg" className="w-full h-full" onClick={() => navigate('/export')}>
+              Go to Export
+            </Button>
+          </div>
+        </div>
       )}
     </div>
   );
