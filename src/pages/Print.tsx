@@ -28,6 +28,12 @@ export default function Print() {
 
   return (
     <div className="p-8 space-y-8" style={{ overflowWrap: 'anywhere' }}>
+      <style>
+        {`
+          /* Ensure colors are preserved in print */
+          * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        `}
+      </style>
       {/* Cover Page */}
       <section className="cover-page">
         <div className="cover-logo">ESG</div>
@@ -55,7 +61,11 @@ export default function Print() {
           <h2 className="text-xl font-semibold mb-2" style={{ pageBreakAfter: 'avoid' }}>Question Responses</h2>
           <table className="w-full text-sm border-collapse">
             <thead>
-              <tr className="border-b"><th className="text-left p-2">ID</th><th className="text-left p-2">Question</th><th className="text-left p-2">Answer</th><th className="text-left p-2">Score</th><th className="text-left p-2">Clause</th></tr>
+              <tr className="border-b">
+                <th className="text-left p-2">ID</th>
+                <th className="text-left p-2">Question</th>
+                <th className="text-left p-2">Answer</th>
+              </tr>
             </thead>
             <tbody>
               {questionnaireDef.sections.flatMap(s => s.questions).map(q => {
@@ -67,8 +77,6 @@ export default function Print() {
                     <td className="p-2">{q.id}</td>
                     <td className="p-2">{q.question}</td>
                     <td className="p-2">{String(label)}</td>
-                    <td className="p-2">{String(sev ?? 'N/A')}</td>
-                    <td className="p-2">{q.relevantClause || ''}</td>
                   </tr>
                 );
               })}
@@ -82,9 +90,17 @@ export default function Print() {
           <h2 className="text-xl font-semibold mb-4 text-brand-navy">Gaps Analysis</h2>
           <div className="space-y-4">
             {(scoring?.gapsDetailed || []).map((g) => {
+              const isHigh = g.priority === 'High';
+              const isMedium = g.priority === 'Medium';
+              const bg = isHigh ? '#fee2e2' : isMedium ? '#fef3c7' : '#ecfdf5';
+              const border = isHigh ? '#fecaca' : isMedium ? '#fde68a' : '#bbf7d0';
               const badgeClass = g.priority === 'High' ? 'badge-high' : g.priority === 'Medium' ? 'badge-medium' : 'badge-low';
               return (
-                <div key={g.id} className="gap-card border rounded-lg shadow-sm p-4 bg-white" style={{ breakInside: 'avoid' }}>
+                <div
+                  key={g.id}
+                  className="gap-card border rounded-lg shadow-sm p-4"
+                  style={{ breakInside: 'avoid', backgroundColor: bg, borderColor: border }}
+                >
                   <div className="flex items-start justify-end gap-3">
                     <span className={`text-xs px-2 py-0.5 rounded-full whitespace-nowrap ${badgeClass}`}>{g.priority}</span>
                   </div>
@@ -92,7 +108,7 @@ export default function Print() {
                     {g.gapDescription || g.description}
                   </div>
                   {g.recommendation && (
-                    <div className="mt-2 text-sm italic text-brand-teal">
+                    <div className="mt-2 text-sm italic" style={{ color: '#0f766e' }}>
                       Recommendation: {g.recommendation}
                     </div>
                   )}
