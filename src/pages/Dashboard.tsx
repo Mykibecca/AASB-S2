@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { BarChart3, TrendingUp, Shield, Calendar } from "lucide-react";
 import { storage, UserData } from "@/lib/storage";
+import { useNavigate } from "react-router-dom";
 import ReadinessDashboard from "@/components/ReadinessDashboard";
 import { scoreAnswers, ApplicabilityProfile } from "@/lib/logicEngine";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -87,6 +90,11 @@ export default function Dashboard() {
           <p className="text-lg text-muted-foreground mt-2">
             Track your Assessment progress and identify gaps in your climate disclosure readiness
           </p>
+        </div>
+        <div className="pt-2">
+          <Button variant="sustainability" onClick={() => navigate('/export')}>
+            Go to Export
+          </Button>
         </div>
       </div>
 
