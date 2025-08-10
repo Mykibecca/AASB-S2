@@ -4,7 +4,6 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import puppeteer from 'puppeteer';
-import { PDFDocument } from 'pdf-lib';
 
 const app = express();
 app.use(cors());
@@ -25,40 +24,36 @@ app.post('/api/export/pdf', async (req, res) => {
     browser = await puppeteer.launch({ headless: 'new', args: ['--no-sandbox','--disable-setuid-sandbox'] });
     const page = await browser.newPage();
 
-    // Seed localStorage before navigation so app has data
-    await page.goto('about:blank');
-    await page.evaluate(({ company, classification, answers }) => {
+    const ensuredSections = Array.isArray(sections) ? sections : [];
+    const candidateOrigins = [
+      appOrigin,
+      process.env.APP_ORIGIN,
+      'http://localhost:5173',
+      'http://127.0.0.1:5173',
+      'http://localhost:4173',
+      'http://127.0.0.1:4173',
+      'http://localhost:8080'
+    ].filter(Boolean);
+    let navigated = false;
+    for (const originCandidate of candidateOrigins) {
       try {
-        if (company) localStorage.setItem('companyProfileData', JSON.stringify(company));
-        if (classification) localStorage.setItem('classificationResult', JSON.stringify(classification));
-        if (answers) localStorage.setItem('questionnaireAnswers', JSON.stringify(answers));
-      } catch {}
-    }, { company, classification, answers });
-
-  const query = encodeURIComponent(JSON.stringify(sections));
-  // Ensure company profile section renders when requested
-  const ensuredSections = Array.isArray(sections) ? sections : [];
-  const candidateOrigins = [
-    appOrigin,
-    process.env.APP_ORIGIN,
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-    'http://localhost:4173',
-    'http://127.0.0.1:4173',
-    'http://localhost:8080'
-  ].filter(Boolean);
-  let navigated = false;
-  for (const originCandidate of candidateOrigins) {
-    const tryUrl = `${originCandidate}/print?sections=${encodeURIComponent(JSON.stringify(ensuredSections))}`;
-    try {
-      await page.goto(tryUrl, { waitUntil: 'domcontentloaded' });
-      await page.waitForSelector('.cover-page, .print-section', { timeout: 15000 });
-      navigated = true;
-      break;
-    } catch (navErr) {
-      // try next origin
+        await page.goto(`${originCandidate}/`, { waitUntil: 'domcontentloaded' });
+        await page.evaluate(({ company, classification, answers }) => {
+          try {
+            if (company) localStorage.setItem('companyProfileData', JSON.stringify(company));
+            if (classification) localStorage.setItem('classificationResult', JSON.stringify(classification));
+            if (answers) localStorage.setItem('questionnaireAnswers', JSON.stringify(answers));
+          } catch {}
+        }, { company, classification, answers });
+        const tryUrl = `${originCandidate}/print?sections=${encodeURIComponent(JSON.stringify(ensuredSections))}`;
+        await page.goto(tryUrl, { waitUntil: 'domcontentloaded' });
+        await page.waitForSelector('.cover-page, .print-section', { timeout: 15000 });
+        navigated = true;
+        break;
+      } catch (navErr) {
+        // try next origin
+      }
     }
-  }
   if (!navigated) {
     throw new Error('Unable to reach app origin to render /print');
   }
@@ -82,24 +77,9 @@ app.post('/api/export/pdf', async (req, res) => {
       footerTemplate,
       margin: { top: '18mm', bottom: '18mm', left: '16mm', right: '16mm' }
     });
-    let finalBytes = pdf;
-
-    // Merge external AASB S2 PDF at the end for offline visibility
-    try {
-      const mainDoc = await PDFDocument.load(finalBytes);
-      const aasbResp = await fetch('https://standards.aasb.gov.au/sites/default/files/2025-01/AASBS2_09-24.pdf');
-      const aasbBytes = await aasbResp.arrayBuffer();
-      const aasbDoc = await PDFDocument.load(aasbBytes);
-      const copied = await mainDoc.copyPages(aasbDoc, aasbDoc.getPageIndices());
-      copied.forEach(p => mainDoc.addPage(p));
-      finalBytes = await mainDoc.save();
-    } catch (mergeErr) {
-      console.warn('Append AASB PDF failed (continuing with main PDF):', mergeErr?.message);
-    }
-
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'attachment; filename="AASB_S2_Readiness_Report.pdf"');
-    res.send(Buffer.from(finalBytes));
+    res.send(Buffer.from(pdf));
   } catch (err) {
     console.error('PDF export error', err);
     res.status(500).json({ error: 'Failed to generate PDF' });
