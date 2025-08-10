@@ -109,22 +109,7 @@ export default function Print() {
 
       {/* Recommendations removed by requirement */}
 
-      {sections.includes('appendices') && (
-        <section className="print-section section">
-          <h2 className="text-xl font-semibold mb-2">Appendices</h2>
-          <div className="space-y-4">
-            <div className="text-sm text-muted-foreground">
-              The full AASB S2 Standard will be appended to this PDF to ensure offline accessibility.
-            </div>
-            <figure className="mt-3">
-              <img style={{ width: '100%', height: 'auto' }} src="https://standards.auasb.gov.au/sites/default/files/2025-03/ASSA5010_Appendix.PNG" alt="ASSA 5010 Appendix" />
-              <figcaption className="text-xs text-muted-foreground">
-                Source: ASSA 5010 Appendix (AUASB, Jan 2025) – <a className="underline" href="https://standards.auasb.gov.au/assa-5010-jan-2025">https://standards.auasb.gov.au/assa-5010-jan-2025</a>
-              </figcaption>
-            </figure>
-          </div>
-        </section>
-      )}
+      {/* Appendices removed by request */}
     </div>
   );
 }

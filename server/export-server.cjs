@@ -25,16 +25,6 @@ app.post('/api/export/pdf', async (req, res) => {
     browser = await puppeteer.launch({ headless: 'new', args: ['--no-sandbox','--disable-setuid-sandbox'] });
     const page = await browser.newPage();
 
-    // Seed localStorage before navigation so app has data
-    await page.goto('about:blank');
-    await page.evaluate(({ company, classification, answers }) => {
-      try {
-        if (company) localStorage.setItem('companyProfileData', JSON.stringify(company));
-        if (classification) localStorage.setItem('classificationResult', JSON.stringify(classification));
-        if (answers) localStorage.setItem('questionnaireAnswers', JSON.stringify(answers));
-      } catch {}
-    }, { company, classification, answers });
-
     const query = encodeURIComponent(JSON.stringify(sections));
     // Ensure company profile section renders when requested
     const ensuredSections = Array.isArray(sections) ? sections : [];
@@ -49,8 +39,19 @@ app.post('/api/export/pdf', async (req, res) => {
     ].filter(Boolean);
     let navigated = false;
     for (const originCandidate of candidateOrigins) {
-      const tryUrl = `${originCandidate}/print?sections=${encodeURIComponent(JSON.stringify(ensuredSections))}`;
       try {
+        // First navigate to the app origin to get the correct localStorage origin scope
+        await page.goto(`${originCandidate}/`, { waitUntil: 'domcontentloaded' });
+        // Seed localStorage for this origin
+        await page.evaluate(({ company, classification, answers }) => {
+          try {
+            if (company) localStorage.setItem('companyProfileData', JSON.stringify(company));
+            if (classification) localStorage.setItem('classificationResult', JSON.stringify(classification));
+            if (answers) localStorage.setItem('questionnaireAnswers', JSON.stringify(answers));
+          } catch {}
+        }, { company, classification, answers });
+        // Now navigate to the print route with the requested sections
+        const tryUrl = `${originCandidate}/print?sections=${encodeURIComponent(JSON.stringify(ensuredSections))}`;
         await page.goto(tryUrl, { waitUntil: 'domcontentloaded' });
         await page.waitForSelector('.cover-page, .print-section', { timeout: 15000 });
         navigated = true;
@@ -82,24 +83,9 @@ app.post('/api/export/pdf', async (req, res) => {
       footerTemplate,
       margin: { top: '18mm', bottom: '18mm', left: '16mm', right: '16mm' }
     });
-    let finalBytes = pdf;
-
-    // Merge external AASB S2 PDF at the end for offline visibility
-    try {
-      const mainDoc = await PDFDocument.load(finalBytes);
-      const aasbResp = await fetch('https://standards.aasb.gov.au/sites/default/files/2025-01/AASBS2_09-24.pdf');
-      const aasbBytes = await aasbResp.arrayBuffer();
-      const aasbDoc = await PDFDocument.load(aasbBytes);
-      const copied = await mainDoc.copyPages(aasbDoc, aasbDoc.getPageIndices());
-      copied.forEach(p => mainDoc.addPage(p));
-      finalBytes = await mainDoc.save();
-    } catch (mergeErr) {
-      console.warn('Append AASB PDF failed (continuing with main PDF):', mergeErr?.message);
-    }
-
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'attachment; filename="AASB_S2_Readiness_Report.pdf"');
-    res.send(Buffer.from(finalBytes));
+    res.send(Buffer.from(pdf));
   } catch (err) {
     console.error('PDF export error', err);
     res.status(500).json({ error: 'Failed to generate PDF' });

@@ -14,8 +14,7 @@ export default function Export() {
   const [selectedSections, setSelectedSections] = useState<string[]>([
     "company-profile", 
     "responses",
-    "gaps-analysis",
-    "appendices"
+    "gaps-analysis"
   ]);
   // Sharing removed
 
@@ -45,8 +44,7 @@ export default function Export() {
   const exportSections = [
     { id: "company-profile", name: "Company Profile", description: "Organization details and context" },
     { id: "responses", name: "Question Responses", description: "Detailed answers by question" },
-    { id: "gaps-analysis", name: "Gaps Analysis", description: "Identified areas for improvement" },
-    { id: "appendices", name: "Appendices", description: "Supporting documentation and references" }
+    { id: "gaps-analysis", name: "Gaps Analysis", description: "Identified areas for improvement" }
   ];
 
   const handleSectionToggle = (sectionId: string) => {
