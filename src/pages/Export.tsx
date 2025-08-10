@@ -22,13 +22,15 @@ export default function Export() {
   const [company, setCompany] = useState<any>(() => storage.getCompanyProfile() || {});
   const [classification, setClassification] = useState<any>(() => storage.getClassification());
   const [answers, setAnswers] = useState<any>(() => storage.getQuestionnaire());
+  const [eligibility, setEligibility] = useState<any>(() => storage.getDisclosureEligibility());
 
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
-      if (e.key === 'companyProfileData' || e.key === 'classificationResult' || e.key === 'questionnaireAnswers') {
+      if (e.key === 'companyProfileData' || e.key === 'classificationResult' || e.key === 'questionnaireAnswers' || e.key === 'disclosureEligibilityAnswers') {
         setCompany(storage.getCompanyProfile() || {});
         setClassification(storage.getClassification());
         setAnswers(storage.getQuestionnaire());
+        setEligibility(storage.getDisclosureEligibility());
       }
     };
     window.addEventListener('storage', onStorage);
@@ -39,6 +41,39 @@ export default function Export() {
     if (!g && g !== 0) return 'N/A';
     if (g === 'not-required') return 'Not Required';
     return `Group ${g}`;
+  };
+
+  const formatEligibility = (id: string, value: string | undefined) => {
+    if (!value) return 'N/A';
+    switch (id) {
+      case 'entity-type':
+        return value === 'for-profit' ? 'For-profit'
+          : value === 'not-for-profit' ? 'Not-for-profit'
+          : value === 'super-or-financial' ? 'Superannuation fund / Financial institution'
+          : 'Other';
+      case 'chapter-2m':
+        return value === 'yes' ? 'Yes' : value === 'no' ? 'No' : 'Unsure';
+      case 'revenue-2025':
+        return value === 'lt-50m' ? 'Less than $50,000,000'
+          : value === '50m-199999999' ? '$50,000,000 to $199,999,999'
+          : value === '200m-499999999' ? '$200,000,000 to $499,999,999'
+          : '$500,000,000 or more';
+      case 'assets-2025':
+        return value === 'lt-25m' ? 'Less than $25,000,000'
+          : value === '25m-99999999' ? '$25,000,000 to $99,999,999'
+          : value === '500m-999999999' ? '$500,000,000 to $999,999,999'
+          : '$1,000,000,000 or more';
+      case 'employees-2025':
+        return value === 'lt-100' ? 'Less than 100'
+          : value === '100-249' ? '100 to 249'
+          : value === '250-499' ? '250 to 499'
+          : '500 or more';
+      case 'nger-reporter':
+      case 'aum-over-5b':
+        return value === 'yes' ? 'Yes' : 'No';
+      default:
+        return value;
+    }
   };
 
   const exportSections = [
@@ -132,23 +167,21 @@ export default function Export() {
             {[
               { label: 'Company', value: company?.companyName || 'N/A' },
               { label: 'Industry', value: company?.industry || 'N/A' },
-              { label: 'Size', value: company?.size || 'N/A' },
-              { label: 'ASX Listed', value: company?.asxListed || 'N/A' },
-              { label: 'RSE Status', value: company?.rseStatus || 'N/A' },
-              { label: 'NGER Reporter', value: company?.ngerReporter || 'N/A' },
-              { label: 'NGER Emissions', value: company?.ngerEmissions || 'N/A' },
-              { label: 'Consolidated Revenue', value: company?.consolidatedRevenue || 'N/A' },
-              { label: 'Gross Assets', value: company?.grossAssets || 'N/A' },
-              { label: 'Employees', value: company?.employees || 'N/A' },
-              { label: 'AASB S2 Group', value: formatGroup(classification?.group) },
-              { label: 'Reporting Start', value: classification?.reportingStart || 'N/A' },
-              
-              { label: 'Generated', value: new Date().toLocaleDateString() }
+              { label: 'Entity Type', value: formatEligibility('entity-type', eligibility['entity-type']) },
+              { label: 'Chapter 2M (Corps Act)', value: formatEligibility('chapter-2m', eligibility['chapter-2m']) },
+              { label: 'Revenue (latest FY)', value: formatEligibility('revenue-2025', eligibility['revenue-2025']) },
+              { label: 'Gross Assets (end FY)', value: formatEligibility('assets-2025', eligibility['assets-2025']) },
+              { label: 'Employees (FTE)', value: formatEligibility('employees-2025', eligibility['employees-2025']) },
+              { label: 'NGER Reporter', value: formatEligibility('nger-reporter', eligibility['nger-reporter']) },
+              { label: 'AUM > $5B (super/financial)', value: formatEligibility('aum-over-5b', eligibility['aum-over-5b']) },
+              { label: 'Group classification', value: formatGroup(classification?.group) },
+              { label: 'Mandatory reporting start date', value: classification?.reportingStart || 'N/A' },
+              { label: 'Generated', value: new Date().toLocaleDateString() },
             ].map((item, idx) => (
               <div key={idx}>
                 <span className="text-muted-foreground">{item.label}:</span>
                 <p className="font-medium break-words">{item.value}</p>
-            </div>
+              </div>
             ))}
           </div>
         </CardContent>
