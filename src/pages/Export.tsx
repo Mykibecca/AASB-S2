@@ -102,6 +102,7 @@ export default function Export() {
       const payloadCompany = storage.getCompanyProfile() || company;
       const payloadClassification = storage.getClassification() || classification;
       const payloadAnswers = storage.getQuestionnaire() || answers;
+      const payloadEligibility = storage.getDisclosureEligibility() || eligibility;
       const resp = await fetch('http://localhost:8787/api/export/pdf', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -110,6 +111,7 @@ export default function Export() {
           company: payloadCompany,
           classification: payloadClassification,
           answers: payloadAnswers,
+          eligibility: payloadEligibility,
           origin
         })
       });

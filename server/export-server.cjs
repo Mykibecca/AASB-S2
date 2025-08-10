@@ -15,7 +15,7 @@ app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
 // PDF export endpoint
 app.post('/api/export/pdf', async (req, res) => {
-  const { sections, company, classification, answers, origin } = req.body || {};
+  const { sections, company, classification, answers, eligibility, origin } = req.body || {};
   if (!Array.isArray(sections)) {
     return res.status(400).json({ error: 'sections required' });
   }
@@ -43,13 +43,14 @@ app.post('/api/export/pdf', async (req, res) => {
         // First navigate to the app origin to get the correct localStorage origin scope
         await page.goto(`${originCandidate}/`, { waitUntil: 'domcontentloaded' });
         // Seed localStorage for this origin
-        await page.evaluate(({ company, classification, answers }) => {
+        await page.evaluate(({ company, classification, answers, eligibility }) => {
           try {
             if (company) localStorage.setItem('companyProfileData', JSON.stringify(company));
             if (classification) localStorage.setItem('classificationResult', JSON.stringify(classification));
             if (answers) localStorage.setItem('questionnaireAnswers', JSON.stringify(answers));
+            if (eligibility) localStorage.setItem('disclosureEligibilityAnswers', JSON.stringify(eligibility));
           } catch {}
-        }, { company, classification, answers });
+        }, { company, classification, answers, eligibility });
         // Ensure app knows storage changed in this context
         await page.evaluate(() => {
           try {
