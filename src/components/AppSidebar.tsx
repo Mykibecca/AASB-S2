@@ -2,10 +2,12 @@ import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { 
   Home, 
+  Building2, 
   FileCheck, 
   ClipboardList, 
   BarChart3, 
   Download,
+  Leaf,
   ChevronRight
 } from "lucide-react";
 
@@ -55,11 +57,9 @@ export function AppSidebar() {
         {/* App Brand */}
         <div className="p-4 border-b border-border">
           <NavLink to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <img
-              src="/logo.png"
-              alt="AASB S2 Readiness"
-              className="w-10 h-10 object-contain rounded-xl flex-shrink-0"
-            />
+            <div className="w-10 h-10 bg-gradient-sustainability rounded-xl flex items-center justify-center flex-shrink-0">
+              <Leaf className="w-6 h-6 text-white" />
+            </div>
             {!isCollapsed && (
               <div className="min-w-0">
                 <h1 className="font-bold text-lg text-foreground truncate">AASB S2 Toolkit</h1>

@@ -5,15 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { CheckCircle, ArrowRight, Info, Building, AlertTriangle, FileText, Calendar, Shield } from "lucide-react";
+import { ArrowRight, Building, FileText, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { storage } from "@/lib/storage";
 
 interface AssessmentResult {
-  applies: boolean;
-  group: number | 'exempt';
-  reportingStartDate: string;
-  assuranceLevel: 'limited' | 'reasonable' | 'none';
+  inScope: boolean;
+  classificationGroup: 1 | 2 | 3 | 'voluntary';
+  mandatoryStartDate: string; // ISO date string
   reasoning: string[];
 }
 
@@ -57,62 +56,84 @@ export default function ReadinessCheck() {
       ]
     },
     {
-      id: "esg-maturity",
-      question: "ESG Maturity Level (Optional)",
-      description: "Select your organization's ESG maturity level",
+      id: "entity-type",
+      question: "Entity Type",
+      description: "Select the type that best describes your entity",
       type: "select",
-      optional: true,
       options: [
-        { value: "basic", label: "Basic (New to ESG reporting)" },
-        { value: "moderate", label: "Moderate (Some ESG experience)" },
-        { value: "advanced", label: "Advanced (Established ESG practices)" }
+        { value: "for-profit", label: "For-profit" },
+        { value: "not-for-profit", label: "Not-for-profit" },
+        { value: "super-or-financial", label: "Superannuation fund / Financial institution" },
+        { value: "other", label: "Other" },
       ]
     },
     {
-      id: "revenue",
-      question: "What is the total consolidated revenue of the reporting entity for the last financial year?",
-      description: "This helps determine size thresholds for mandatory disclosure.",
+      id: "chapter-2m",
+      question: "Do you prepare annual financial reports under Chapter 2M of the Corporations Act?",
+      description: "If No, you are out of mandatory scope (Voluntary only).",
       type: "radio",
       options: [
-        { value: "less-than-50m", label: "Less than $50 million" },
-        { value: "50m-to-200m", label: "$50 million to $200 million" },
-        { value: "more-than-200m", label: "More than $200 million" }
+        { value: "yes", label: "Yes" },
+        { value: "no", label: "No" },
+        { value: "unsure", label: "Unsure" },
       ]
     },
     {
-      id: "assets",
-      question: "What is the total consolidated gross assets of the reporting entity?",
-      description: "Used for group classification thresholds.",
-      type: "radio",
+      id: "revenue-2025",
+      question: "Annual consolidated revenue for the most recent financial year",
+      description: "Select a range",
+      type: "select",
       options: [
-        { value: "less-than-25m", label: "Less than $25 million" },
-        { value: "25m-to-500m", label: "$25 million to $500 million" },
-        { value: "more-than-500m", label: "More than $500 million" }
+        { value: "lt-50m", label: "Less than $50,000,000" },
+        { value: "50m-199999999", label: "$50,000,000 to $199,999,999" },
+        { value: "200m-499999999", label: "$200,000,000 to $499,999,999" },
+        { value: "gte-500m", label: "$500,000,000 or more" },
       ]
     },
     {
-      id: "employees",
-      question: "How many employees does the reporting entity and its controlled entities have in total?",
-      description: "Headcount is a key determinant for AASB S2 group thresholds.",
-      type: "radio",
+      id: "assets-2025",
+      question: "Consolidated gross assets at the end of the financial year",
+      description: "Select a range",
+      type: "select",
       options: [
-        { value: "fewer-than-100", label: "Fewer than 100" },
-        { value: "100-to-499", label: "100 to 499" },
-        { value: "500-or-more", label: "500 or more" }
+        { value: "lt-25m", label: "Less than $25,000,000" },
+        { value: "25m-99999999", label: "$25,000,000 to $99,999,999" },
+        { value: "500m-999999999", label: "$500,000,000 to $999,999,999" },
+        { value: "gte-1b", label: "$1,000,000,000 or more" },
       ]
     },
     {
-      id: "corporate-structure",
-      question: "What best describes the reporting entity's corporate structure or status?",
-      description: "This helps determine if the entity is required to report under the Corporations Act obligations",
+      id: "employees-2025",
+      question: "Number of employees (FTE)",
+      description: "Select a range",
+      type: "select",
+      options: [
+        { value: "lt-100", label: "Less than 100" },
+        { value: "100-249", label: "100 to 249" },
+        { value: "250-499", label: "250 to 499" },
+        { value: "gte-500", label: "500 or more" },
+      ]
+    },
+    {
+      id: "nger-reporter",
+      question: "Are you an NGER reporter?",
+      description: "National Greenhouse and Energy Reporting",
       type: "radio",
       options: [
-        { value: "asx-listed", label: "Listed on a public exchange (e.g. ASX)" },
-        { value: "large-proprietary", label: "Registered with ASIC as a large proprietary company" },
-        { value: "other", label: "Other (e.g. trust, partnership, small private company)" },
-        { value: "unsure", label: "Unsure" }
+        { value: "yes", label: "Yes" },
+        { value: "no", label: "No" },
       ]
-    }
+    },
+    {
+      id: "aum-over-5b",
+      question: "Are you a super fund / financial institution with assets under management > $5,000,000,000?",
+      description: "Answer Yes if AUM exceeds $5B",
+      type: "radio",
+      options: [
+        { value: "yes", label: "Yes" },
+        { value: "no", label: "No" },
+      ]
+    },
   ];
 
   // Load answers from localStorage on component mount
@@ -131,83 +152,108 @@ export default function ReadinessCheck() {
 
   const assessEligibility = (): AssessmentResult => {
     const reasoning: string[] = [];
-    let applies = false;
-    let group: number | 'exempt' = 'exempt';
-    let reportingStartDate = '';
-    let assuranceLevel: 'limited' | 'reasonable' | 'none' = 'none';
 
-    // Determine group based on size and corporate structure
-    const revenue = answers['revenue'];
-    const assets = answers['assets'];
-    const employees = answers['employees'];
-    const corporateStructure = answers['corporate-structure'];
+    // Question references
+    const chapter2m = answers['chapter-2m'];
+    const revenue = answers['revenue-2025'];
+    const assets = answers['assets-2025'];
+    const employees = answers['employees-2025'];
+    const nger = answers['nger-reporter'];
+    const aumOver5b = answers['aum-over-5b'];
 
-    // Group 1 criteria (ASX-listed entities with market cap > $500m)
-    if (corporateStructure === 'asx-listed' && 
-        (revenue === 'more-than-200m' || assets === 'more-than-500m')) {
-      group = 1;
-      reportingStartDate = 'FY2024/25';
-      assuranceLevel = 'limited';
-      applies = true;
-      reasoning.push("ASX-listed entity with significant size thresholds");
-      reasoning.push("Falls under Group 1 - earliest reporting requirement");
+    // Chapter 2M gate
+    if (chapter2m === 'no') {
+      reasoning.push('Not preparing annual financial reports under Chapter 2M of the Corporations Act. Out of mandatory scope.');
+      return {
+        inScope: false,
+        classificationGroup: 'voluntary',
+        mandatoryStartDate: '',
+        reasoning,
+      };
     }
-    // Group 2 criteria (ASX-listed entities with market cap $100m-$500m)
-    else if (corporateStructure === 'asx-listed' && 
-             (revenue === '50m-to-200m' || assets === '25m-to-500m')) {
-      group = 2;
-      reportingStartDate = 'FY2026/27';
-      assuranceLevel = 'limited';
-      applies = true;
-      reasoning.push("ASX-listed entity with moderate size thresholds");
-      reasoning.push("Falls under Group 2 - reporting from FY2026/27");
+
+    // Size thresholds (>= 2 of 3)
+    const revenueThresholdMet = revenue && revenue !== 'lt-50m';
+    const assetsThresholdMet = assets && assets !== 'lt-25m';
+    const employeesThresholdMet = employees && employees !== 'lt-100';
+    const sizeThresholdsMet = [revenueThresholdMet, assetsThresholdMet, employeesThresholdMet].filter(Boolean).length;
+
+    const ngerReporter = nger === 'yes';
+    const superAumOver5b = aumOver5b === 'yes';
+
+    const inScope = sizeThresholdsMet >= 2 || ngerReporter || superAumOver5b || chapter2m === 'yes';
+
+    if (!inScope) {
+      reasoning.push('Entity does not meet any in-scope conditions (size thresholds, NGER, or AUM > $5B).');
+      return {
+        inScope: false,
+        classificationGroup: 'voluntary',
+        mandatoryStartDate: '',
+        reasoning,
+      };
     }
-    // Group 3 criteria (Large proprietary companies and other entities)
-    else if (corporateStructure === 'large-proprietary' || 
-             (corporateStructure === 'asx-listed' && 
-              (revenue === 'less-than-50m' || assets === 'less-than-25m'))) {
-      group = 3;
-      reportingStartDate = 'FY2027/28';
-      assuranceLevel = 'limited';
-      applies = true;
-      reasoning.push("Large proprietary company or smaller ASX-listed entity");
-      reasoning.push("Falls under Group 3 - reporting from FY2027/28");
+
+    // Determine group by size bracket intensity (assumption due to unspecified group criteria)
+    const bracketIndex = (val: string | undefined, order: string[]): number => (val ? Math.max(0, order.indexOf(val)) : 0);
+    const revenueOrder = ['lt-50m', '50m-199999999', '200m-499999999', 'gte-500m'];
+    const assetsOrder = ['lt-25m', '25m-99999999', '500m-999999999', 'gte-1b'];
+    const employeesOrder = ['lt-100', '100-249', '250-499', 'gte-500'];
+
+    let sizeScore = Math.max(
+      bracketIndex(revenue, revenueOrder),
+      bracketIndex(assets, assetsOrder),
+      bracketIndex(employees, employeesOrder)
+    );
+
+    if (ngerReporter || superAumOver5b) {
+      sizeScore = Math.max(sizeScore, 3); // escalate to highest tier
+      if (ngerReporter) reasoning.push('NGER reporter.');
+      if (superAumOver5b) reasoning.push('Super fund/financial institution with AUM > $5B.');
     }
-    // Other entities with significant size
-    else if (revenue === 'more-than-200m' || assets === 'more-than-500m' || employees === '500-or-more') {
-      group = 3;
-      reportingStartDate = 'FY2027/28';
-      assuranceLevel = 'limited';
-      applies = true;
-      reasoning.push("Significant size thresholds met");
-      reasoning.push("Falls under Group 3 - reporting from FY2027/28");
-    }
-    // Exempt
-    else {
-      reasoning.push("Entity does not meet mandatory disclosure thresholds");
-    }
+
+    let classificationGroup: 1 | 2 | 3 = 3;
+    if (sizeScore >= 3) classificationGroup = 1;
+    else if (sizeScore === 2) classificationGroup = 2;
+    else classificationGroup = 3;
+
+    const mandatoryStartDate = classificationGroup === 1
+      ? '2025-01-01'
+      : classificationGroup === 2
+        ? '2026-07-01'
+        : '2027-07-01';
+
+    reasoning.push(`Meets in-scope conditions (${sizeThresholdsMet} size thresholds met${ngerReporter ? ', NGER' : ''}${superAumOver5b ? ', AUM>5B' : ''}).`);
+    reasoning.push(`Assigned Group ${classificationGroup}.`);
 
     return {
-      applies,
-      group,
-      reportingStartDate,
-      assuranceLevel,
-      reasoning
+      inScope: true,
+      classificationGroup,
+      mandatoryStartDate,
+      reasoning,
     };
   };
 
-  const allQuestionsAnswered = questions.every(q => 
-    q.optional ? true : answers[q.id]
-  );
+  const allQuestionsAnswered = questions.every(q => q.optional ? true : !!answers[q.id]);
 
   // Calculate assessment result when all classification questions are answered
   useEffect(() => {
-    const classificationQuestions = ['revenue', 'assets', 'employees', 'corporate-structure'];
+    const classificationQuestions = [
+      'entity-type', 'chapter-2m', 'revenue-2025', 'assets-2025', 'employees-2025', 'nger-reporter', 'aum-over-5b'
+    ];
     const allClassificationAnswered = classificationQuestions.every(q => answers[q]);
-    
+
     if (allClassificationAnswered) {
       const result = assessEligibility();
       setAssessmentResult(result);
+
+      // Persist classification for use across the app
+      storage.saveClassification({
+        group: result.inScope ? (result.classificationGroup as 1 | 2 | 3) : 'not-required',
+        reportingStart: result.mandatoryStartDate,
+        assuranceRequired: false,
+        reasoning: result.reasoning,
+        inScope: result.inScope,
+      } as any);
     }
   }, [answers]);
 
@@ -320,8 +366,8 @@ export default function ReadinessCheck() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <Badge variant={assessmentResult.applies ? "default" : "secondary"}>
-                    {assessmentResult.applies ? "AASB S2 Applies" : "AASB S2 Does Not Apply"}
+                  <Badge variant={assessmentResult.inScope ? "default" : "secondary"}>
+                    {assessmentResult.inScope ? "AASB S2 Applies" : "Out of mandatory scope (Voluntary only)"}
                   </Badge>
                 </div>
                 
@@ -329,22 +375,14 @@ export default function ReadinessCheck() {
                   <Building className="w-4 h-4 text-blue-600" />
                   <span className="text-sm font-medium">Group Classification:</span>
                   <Badge variant="outline">
-                    {assessmentResult.group === 'exempt' ? 'Exempt' : `Group ${assessmentResult.group}`}
+                    {assessmentResult.inScope ? `Group ${assessmentResult.classificationGroup}` : 'Voluntary only'}
                   </Badge>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-blue-600" />
-                  <span className="text-sm font-medium">Reporting Start Date:</span>
-                  <span className="text-sm">{assessmentResult.reportingStartDate}</span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-blue-600" />
-                  <span className="text-sm font-medium">Assurance Level:</span>
-                  <Badge variant="outline" className="capitalize">
-                    {assessmentResult.assuranceLevel === 'none' ? 'None required' : `${assessmentResult.assuranceLevel} assurance`}
-                  </Badge>
+                  <span className="text-sm font-medium">Mandatory reporting start date:</span>
+                  <span className="text-sm">{assessmentResult.mandatoryStartDate || '—'}</span>
                 </div>
               </div>
 

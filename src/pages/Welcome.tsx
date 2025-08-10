@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, FileCheck, ClipboardList, BarChart3, Download } from "lucide-react";
+import { Leaf, ArrowRight, FileCheck, ClipboardList, BarChart3, Download } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Welcome() {
@@ -12,11 +12,9 @@ export default function Welcome() {
       {/* Hero Section */}
       <div className="text-center space-y-6 py-12">
         <div className="flex justify-center mb-6">
-          <img
-            src="/logo.png"
-            alt="AASB S2 Readiness"
-            className="w-32 h-32 object-contain"
-          />
+          <div className="w-20 h-20 bg-gradient-sustainability rounded-2xl flex items-center justify-center shadow-elevated">
+            <Leaf className="w-12 h-12 text-white" />
+          </div>
         </div>
         
         <div className="space-y-4">
@@ -51,14 +49,14 @@ export default function Welcome() {
             {[
               { title: "Classification Information", icon: FileCheck },
               { title: "Disclosure Questions", icon: ClipboardList },
-              { title: "Progress Dashboard", icon: BarChart3 },
+              { title: "Summary Dashboard", icon: BarChart3 },
               { title: "Export & Share", icon: Download },
             ].map((step, index) => (
               <div key={index} className="text-center space-y-2">
                 <div className="w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center mx-auto">
                   <step.icon className="w-5 h-5" />
                 </div>
-                <p className="text-xs text-muted-foreground">{`Step ${index + 1}`}</p>
+                <p className="text-xs text-muted-foreground">Step {index + 1}</p>
                 <p className="text-sm font-medium text-foreground">{step.title}</p>
               </div>
             ))}
