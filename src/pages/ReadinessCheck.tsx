@@ -148,6 +148,15 @@ export default function ReadinessCheck() {
     const newAnswers = { ...answers, [questionId]: value };
     setAnswers(newAnswers);
     storage.saveDisclosureEligibility(newAnswers);
+
+    // Keep company profile in sync with Readiness Check for export
+    if (questionId === 'company-name' || questionId === 'industry') {
+      const currentProfile = storage.getCompanyProfile() || {} as any;
+      const updatedProfile = { ...currentProfile } as any;
+      if (questionId === 'company-name') updatedProfile.companyName = value;
+      if (questionId === 'industry') updatedProfile.industry = value;
+      storage.saveCompanyProfile(updatedProfile);
+    }
   };
 
   const assessEligibility = (): AssessmentResult => {

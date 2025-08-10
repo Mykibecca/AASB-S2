@@ -44,8 +44,8 @@ export default function Print() {
           <div className="grid grid-cols-2 gap-2 text-sm">
             <div><strong>Company:</strong> {company?.companyName || 'N/A'}</div>
             <div><strong>Industry:</strong> {company?.industry || 'N/A'}</div>
-            <div><strong>Size:</strong> {company?.size || 'N/A'}</div>
-            <div><strong>ASX Listed:</strong> {company?.asxListed || 'N/A'}</div>
+            <div><strong>Group classification:</strong> {profile ? (profile.entityGroup === 'voluntary' ? 'Voluntary only' : `Group ${profile.entityGroup}`) : 'N/A'}</div>
+            <div><strong>Mandatory reporting start date:</strong> {classification?.reportingStart || 'N/A'}</div>
           </div>
         </section>
       )}

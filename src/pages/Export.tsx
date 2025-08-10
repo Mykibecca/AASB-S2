@@ -22,12 +22,14 @@ export default function Export() {
   // Company/classification data
   const [company, setCompany] = useState<any>(() => storage.getCompanyProfile() || {});
   const [classification, setClassification] = useState<any>(() => storage.getClassification());
+  const [answers, setAnswers] = useState<any>(() => storage.getQuestionnaire());
 
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
-      if (e.key === 'companyProfileData' || e.key === 'classificationResult') {
+      if (e.key === 'companyProfileData' || e.key === 'classificationResult' || e.key === 'questionnaireAnswers') {
         setCompany(storage.getCompanyProfile() || {});
         setClassification(storage.getClassification());
+        setAnswers(storage.getQuestionnaire());
       }
     };
     window.addEventListener('storage', onStorage);
@@ -65,7 +67,7 @@ export default function Export() {
           sections: selectedSections,
           company,
           classification,
-          answers: storage.getQuestionnaire(),
+          answers,
           origin
         })
       });
