@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Leaf, ArrowRight } from "lucide-react";
+import { Leaf, ArrowRight, FileCheck, ClipboardList, BarChart3, Download } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Welcome() {
@@ -47,16 +47,17 @@ export default function Welcome() {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {[
-              "Classification Information", 
-              "Disclosure Questions",
-              "Progress Dashboard",
-              "Export & Share"
+              { title: "Classification Information", icon: FileCheck },
+              { title: "Disclosure Questions", icon: ClipboardList },
+              { title: "Progress Dashboard", icon: BarChart3 },
+              { title: "Export & Share", icon: Download },
             ].map((step, index) => (
               <div key={index} className="text-center space-y-2">
-                <div className="w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold mx-auto">
-                  {index + 1}
+                <div className="w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center mx-auto">
+                  <step.icon className="w-5 h-5" />
                 </div>
-                <p className="text-sm font-medium text-foreground">{step}</p>
+                <p className="text-xs text-muted-foreground">{`Step ${index + 1}`}</p>
+                <p className="text-sm font-medium text-foreground">{step.title}</p>
               </div>
             ))}
           </div>
