@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Leaf, ArrowRight, FileCheck, ClipboardList, BarChart3, Download } from "lucide-react";
+import { ArrowRight, FileCheck, ClipboardList, BarChart3, Download } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Welcome() {
@@ -12,9 +12,11 @@ export default function Welcome() {
       {/* Hero Section */}
       <div className="text-center space-y-6 py-12">
         <div className="flex justify-center mb-6">
-          <div className="w-20 h-20 bg-gradient-sustainability rounded-2xl flex items-center justify-center shadow-elevated">
-            <Leaf className="w-12 h-12 text-white" />
-          </div>
+          <img
+            src="/logo.png"
+            alt="AASB S2 Readiness"
+            className="w-32 h-32 object-contain"
+          />
         </div>
         
         <div className="space-y-4">
