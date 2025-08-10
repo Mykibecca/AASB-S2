@@ -1,0 +1,332 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Print styles for PDF export */
+@media print {
+  /* Typography */
+  html, body {
+    font-family: Inter, Arial, sans-serif !important;
+    font-size: 10.5pt !important;
+    line-height: 1.45 !important;
+    color: #0B3353 !important; /* navy */
+    background: white !important;
+  }
+
+  /* Heading consistency */
+  h1 { font-size: 22pt !important; margin: 0 0 8mm 0 !important; color: #0B3353 !important; }
+  h2 { font-size: 16pt !important; margin: 0 0 6mm 0 !important; color: #0B3353 !important; }
+  h3 { font-size: 12pt !important; margin: 3mm 0 2mm 0 !important; color: #0B3353 !important; }
+
+  /* Global text wrapping and spacing */
+  *, *::before, *::after {
+    line-height: 1.45 !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+    white-space: normal !important;
+  }
+
+  /* Layout: single column */
+  #root, body, html {
+    display: block !important;
+  }
+  main, .container, .max-w-7xl, .max-w-5xl, .max-w-4xl {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 12mm !important;
+  }
+
+  /* Remove absolute/fixed positioning in print to avoid overlap */
+  .fixed, .absolute, [style*="position:fixed"], [style*="position:absolute"] {
+    position: static !important;
+    inset: auto !important;
+    top: auto !important; right: auto !important; bottom: auto !important; left: auto !important;
+  }
+
+  /* Avoid height constraints that can clip content */
+  [class*="h-"], [style*="height:"] {
+    height: auto !important;
+    max-height: none !important;
+  }
+  .overflow-hidden, .overflow-auto, .overflow-y-auto { overflow: visible !important; }
+
+  /* Prefer wrapping in flex/grid layouts */
+  .flex { flex-wrap: wrap !important; }
+  .grid { grid-auto-flow: row !important; }
+
+  /* Hide navigation and interactive chrome */
+  aside, nav, header, .sidebar, [data-sidebar], [role="navigation"], .hover\:opacity-80, .cursor-pointer { 
+    display: none !important; 
+  }
+  /* Ensure page content starts at top */
+  main { margin: 0 !important; padding-top: 0 !important; }
+
+  /* Colours */
+  .text-brand-navy { color: #0B3353 !important; }
+  .text-brand-teal { color: #0E8B8C !important; }
+  .bg-brand-offwhite { background: #F7F6F2 !important; }
+  .badge-high { color: #E74C3C !important; border: 1px solid #E74C3C !important; background: #E74C3C0D !important; }
+  .badge-medium { color: #F39C12 !important; border: 1px solid #F39C12 !important; background: #F39C120D !important; }
+  .badge-low { color: #2ECC71 !important; border: 1px solid #2ECC71 !important; background: #2ECC710D !important; }
+
+  /* Avoid page breaks inside cards/tables/recommendations */
+  .card, .shadow-card, .gap-card, .recommendation-card, table, thead, tbody, tr, td, th { 
+    page-break-inside: avoid !important; 
+    break-inside: avoid !important;
+  }
+
+  /* Section headers on new page */
+  .print-section { page-break-before: always !important; min-height: 40mm !important; }
+  .print-section:first-child { page-break-before: auto !important; }
+  /* Alias to meet spec: .section */
+  .section { page-break-before: always !important; min-height: 40mm !important; }
+  .section:first-child { page-break-before: auto !important; }
+
+  /* Table header repeat and better printing */
+  thead { display: table-header-group !important; }
+  tfoot { display: table-footer-group !important; }
+
+  /* Images responsive */
+  img { max-width: 100% !important; height: auto !important; }
+
+  /* Spacing between cards */
+  .card, .shadow-card { margin-bottom: 10mm !important; }
+
+  /* Remove hover-only styles */
+  *:hover { box-shadow: none !important; filter: none !important; }
+
+  /* Cover page */
+  .cover-page {
+    page-break-before: auto !important;
+    page-break-after: always !important;
+    min-height: 80vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    background: #F7F6F2 !important; /* off-white */
+    text-align: center !important;
+  }
+  .cover-title { font-size: 26pt !important; color: #0B3353 !important; }
+  .cover-subtitle { font-size: 12pt !important; color: #0E8B8C !important; }
+  .cover-meta { font-size: 10pt !important; color: #0B3353 !important; margin-top: 4mm !important; }
+  .cover-logo {
+    width: 64px; height: 64px; border-radius: 12px; background: #0E8B8C; color: white;
+    display: flex; align-items: center; justify-content: center; font-weight: 700; margin-bottom: 10mm;
+  }
+}
+/* ESG Disclosure App Design System - Professional sustainability reporting theme */
+
+@layer base {
+  :root {
+    /* Core background and text */
+    --background: 210 25% 98%;
+    --foreground: 215 25% 15%;
+
+    /* Card system */
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 15%;
+
+    /* Popover system */
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 15%;
+
+    /* Primary - Professional sustainability blue */
+    --primary: 195 85% 25%;
+    --primary-foreground: 0 0% 98%;
+    --primary-glow: 195 85% 45%;
+
+    /* Secondary - Sage green for sustainability */
+    --secondary: 142 25% 88%;
+    --secondary-foreground: 142 85% 15%;
+
+    /* Muted tones */
+    --muted: 210 25% 95%;
+    --muted-foreground: 215 15% 45%;
+
+    /* Accent - Warm sustainability green */
+    --accent: 142 40% 85%;
+    --accent-foreground: 142 85% 15%;
+
+    /* Status colors */
+    --success: 142 70% 35%;
+    --success-foreground: 0 0% 98%;
+    --warning: 38 92% 45%;
+    --warning-foreground: 0 0% 98%;
+    --destructive: 0 85% 55%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Interactive elements */
+    --border: 215 25% 88%;
+    --input: 215 25% 88%;
+    --ring: 195 85% 45%;
+
+    /* Professional gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-sustainability: linear-gradient(135deg, hsl(195 85% 25%), hsl(142 70% 35%));
+    --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--muted)));
+
+    /* Professional shadows */
+    --shadow-card: 0 4px 20px -2px hsl(var(--primary) / 0.08);
+    --shadow-elevated: 0 8px 32px -4px hsl(var(--primary) / 0.12);
+    --shadow-focus: 0 0 0 3px hsl(var(--primary) / 0.2);
+
+    /* Smooth transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom gradients */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-gradient-sustainability {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+}
+
+.bg-gradient-subtle {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+/* Custom shadows */
+.shadow-card {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.shadow-elevated {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Term highlighting styles */
+.term-highlight {
+  background-color: #fef3c7;
+  color: #92400e;
+  padding: 2px 4px;
+  border-radius: 4px;
+  cursor: help;
+  border-bottom: 1px dashed #f59e0b;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.term-highlight:hover {
+  background-color: #fde68a;
+  color: #78350f;
+  border-bottom-color: #d97706;
+}
+
+/* Tooltip styles for highlighted terms */
+.term-highlight[data-term] {
+  position: relative;
+}
+
+.term-highlight[data-term]:hover::after {
+  content: attr(data-term);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1f2937;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.term-highlight[data-term]:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: #1f2937;
+  z-index: 1000;
+}
+
+/* Animation for tooltips */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.term-highlight[data-term]:hover::after {
+  animation: fadeIn 0.2s ease-out;
+}

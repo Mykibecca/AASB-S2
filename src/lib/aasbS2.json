@@ -1,0 +1,568 @@
+{
+  "questionnaire": [
+    {
+      "id": "G1",
+      "section": "Governance",
+      "question": "Has the board formally assigned responsibility for overseeing climate-related risks and opportunities?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Planning stage only", "score": 1},
+        {"label": "Partial implementation", "score": 2},
+        {"label": "Fully implemented (internal)", "score": 3},
+        {"label": "Fully implemented (disclosed externally)", "score": 4}
+      ],
+      "weight": 8,
+      "skipCondition": null,
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "The board hasn’t formally been assigned responsibility for overseeing climate risks and opportunities.",
+      "recommendation": "Update board mandates or committee charters to explicitly assign climate oversight duties.",
+      "relevantClause": "Paragraph 6(a)(i)—requires disclosure of how responsibilities are reflected in board terms of reference."
+    },
+    {
+      "id": "G2",
+      "section": "Governance",
+      "question": "Does the board receive regular (at least annual) updates on climate-related issues?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Planning stage only", "score": 1},
+        {"label": "Partial implementation", "score": 2},
+        {"label": "Fully implemented (internal)", "score": 3},
+        {"label": "Fully implemented (disclosed externally)", "score": 4}
+      ],
+      "weight": 6,
+      "skipCondition": {"questionId": "G1", "minScore": 2},
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score<2 && weight<8", "urgency": "Medium"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "The board isn’t receiving consistent updates on climate issues.",
+      "recommendation": "Establish a formal reporting cadence (e.g., quarterly climate updates) to the board.",
+      "relevantClause": "Paragraph 6(a)(iii)—states how often and how the board is informed about climate-related risks."
+    },
+    {
+      "id": "G3",
+      "section": "Governance",
+      "question": "Are climate-related responsibilities embedded into committee structures or individual roles?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Planning stage only", "score": 1},
+        {"label": "Partial implementation", "score": 2},
+        {"label": "Fully implemented (internal)", "score": 3},
+        {"label": "Fully implemented (disclosed externally)", "score": 4}
+      ],
+      "weight": 6,
+      "skipCondition": {"questionId": "G1", "minScore": 2},
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score<2 && weight<8", "urgency": "Medium"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "Climate oversight isn’t embedded into formal governance roles or committees.",
+      "recommendation": "Delegate responsibility to a dedicated board committee or officer with defined role descriptions.",
+      "relevantClause": "Paragraph 6(a)(ii)—addresses embedding responsibilities in terms of reference."
+    },
+    {
+      "id": "G4",
+      "section": "Governance",
+      "question": "Does the board have climate competence (skills/experience) or access to expert advice?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Planning stage only", "score": 1},
+        {"label": "Partial implementation", "score": 2},
+        {"label": "Fully implemented (internal)", "score": 3},
+        {"label": "Fully implemented (disclosed externally)", "score": 4}
+      ],
+      "weight": 5,
+      "skipCondition": {"questionId": "G1", "minScore": 2},
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score<2 && weight<8", "urgency": "Medium"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "The board lacks climate-related skills or access to expert advice.",
+      "recommendation": "Provide training or appoint a climate-savvy advisor to leadership.",
+      "relevantClause": "Paragraph 6(a)(ii)—pertains to developing necessary competencies."
+    },
+    {
+      "id": "G5",
+      "section": "Governance",
+      "question": "Are climate-related performance metrics included in executive remuneration and incentive structures?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Under consideration", "score": 1},
+        {"label": "Partially implemented", "score": 2},
+        {"label": "Fully implemented (internal)", "score": 3},
+        {"label": "Fully implemented (disclosed externally)", "score": 4}
+      ],
+      "weight": 7,
+      "skipCondition": {"questionId": "G1", "minScore": 2},
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score<2 && weight<8", "urgency": "Medium"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "Climate-related performance is not linked to executive remuneration.",
+      "recommendation": "Add climate metrics to remuneration scorecards and disclose linkage and weighting.",
+      "relevantClause": "Paragraph 6(c)—how climate objectives and performance are reflected in remuneration policies."
+    },
+    {
+      "id": "G6",
+      "section": "Governance",
+      "question": "Has management been assigned responsibility for climate-related risks and opportunities?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Informal assignment only", "score": 1},
+        {"label": "Partially formalised", "score": 2},
+        {"label": "Fully formalised (internal)", "score": 3},
+        {"label": "Fully formalised (disclosed externally)", "score": 4}
+      ],
+      "weight": 6,
+      "skipCondition": {"questionId": "G1", "minScore": 2},
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score<2 && weight<8", "urgency": "Medium"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "Management climate responsibilities are not formally assigned.",
+      "recommendation": "Assign named executives with climate duties and define reporting to the board.",
+      "relevantClause": "Paragraph 6(b)—management’s role in governance and reporting lines."
+    },
+    {
+      "id": "S1",
+      "section": "Strategy",
+      "question": "Has the organisation identified and documented climate-related risks and opportunities over short, medium, and long term?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Initial identification only", "score": 1},
+        {"label": "Partially documented", "score": 2},
+        {"label": "Comprehensive documentation", "score": 3},
+        {"label": "Fully disclosed externally", "score": 4}
+      ],
+      "weight": 9,
+      "skipCondition": null,
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "Climate-related risks and opportunities across time horizons aren’t fully documented.",
+      "recommendation": "Identify key risks/opportunities and document their effects over short, medium, and long term.",
+      "relevantClause": "Paragraphs 10 and 11—require description of climate risks/opportunities and time horizons."
+    },
+    {
+      "id": "S2",
+      "section": "Strategy",
+      "question": "Has climate scenario analysis been performed to assess resilience of strategy?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Scoping stage only", "score": 1},
+        {"label": "Partial scenario analysis", "score": 2},
+        {"label": "Full scenario analysis (internal)", "score": 3},
+        {"label": "Full scenario analysis (public disclosure)", "score": 4}
+      ],
+      "weight": 9,
+      "skipCondition": {"questionId": "S1", "minScore": 2},
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "Scenario analysis assessing climate resilience hasn’t been conducted.",
+      "recommendation": "Perform scenario analysis using at least two pathways — 1.5 °C and a higher-warming scenario.",
+      "relevantClause": "Paragraph 22 and B4–B12—require use of scenario analysis to assess climate resilience."
+    },
+    {
+      "id": "S3",
+      "section": "Strategy",
+      "question": "Have climate-related impacts been integrated into business strategy and financial planning?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Under consideration", "score": 1},
+        {"label": "Partial integration", "score": 2},
+        {"label": "Fully integrated (internal)", "score": 3},
+        {"label": "Fully integrated (disclosed externally)", "score": 4}
+      ],
+      "weight": 8,
+      "skipCondition": {"questionId": "S2", "minScore": 2},
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "Climate impacts aren’t integrated into strategy or financial planning.",
+      "recommendation": "Embed climate considerations into decision-making, budgeting, and forecasting processes.",
+      "relevantClause": "Paragraphs 9(b)–(d)—effects on strategy, business model, cash flows, and transition planning."
+    },
+    {
+      "id": "S4",
+      "section": "Strategy",
+      "question": "Has the organisation assessed the impact of climate-related risks and opportunities on its business model and value chain?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Initial assessment only", "score": 1},
+        {"label": "Partial assessment", "score": 2},
+        {"label": "Comprehensive assessment (internal)", "score": 3},
+        {"label": "Comprehensive assessment (disclosed externally)", "score": 4}
+      ],
+      "weight": 8,
+      "skipCondition": {"questionId": "S1", "minScore": 2},
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "Impacts on business model and value chain are not assessed or documented.",
+      "recommendation": "Assess climate impacts across operations and the value chain and document material effects.",
+      "relevantClause": "Paragraph 9(a)–(b)—effects on business model and value chain."
+    },
+    {
+      "id": "S5",
+      "section": "Strategy",
+      "question": "Has the organisation developed a climate transition plan with clear targets and timelines?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Initial planning only", "score": 1},
+        {"label": "Partial transition plan", "score": 2},
+        {"label": "Comprehensive plan (internal)", "score": 3},
+        {"label": "Comprehensive plan (disclosed externally)", "score": 4}
+      ],
+      "weight": 9,
+      "skipCondition": {"questionId": "S1", "minScore": 2},
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "No documented transition plan with targets and timelines.",
+      "recommendation": "Develop and publish a credible transition plan with milestones, resources and governance.",
+      "relevantClause": "Paragraph 9(d) and 13—transition plans and implementation."
+    },
+    {
+      "id": "S6",
+      "section": "Strategy",
+      "question": "Has the organisation quantified the financial impact of climate-related risks and opportunities?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Initial quantification only", "score": 1},
+        {"label": "Partial quantification", "score": 2},
+        {"label": "Comprehensive quantification (internal)", "score": 3},
+        {"label": "Comprehensive quantification (disclosed externally)", "score": 4}
+      ],
+      "weight": 8,
+      "skipCondition": {"questionId": "S2", "minScore": 2},
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "Financial effects of climate risks and opportunities are not quantified.",
+      "recommendation": "Quantify current and expected impacts on cash flows, financial position and performance.",
+      "relevantClause": "Paragraph 14—quantitative and qualitative financial effects."
+    },
+    {
+      "id": "R1",
+      "section": "Risk Management",
+      "question": "Has the organisation established processes for identifying climate-related risks?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Informal processes only", "score": 1},
+        {"label": "Partial formalisation", "score": 2},
+        {"label": "Fully formalised processes", "score": 3},
+        {"label": "Fully formalised and disclosed", "score": 4}
+      ],
+      "weight": 8,
+      "skipCondition": null,
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "There is no formal process to identify climate-related risks.",
+      "recommendation": "Implement structured risk identification processes aligned with enterprise risk frameworks.",
+      "relevantClause": "Paragraph 25—covers process for identifying, assessing, and prioritising risks."
+    },
+    {
+      "id": "R2",
+      "section": "Risk Management",
+      "question": "Are climate-related risks integrated into the organisation's overall risk management framework?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Under development", "score": 1},
+        {"label": "Partially integrated", "score": 2},
+        {"label": "Fully integrated", "score": 3},
+        {"label": "Fully integrated and disclosed", "score": 4}
+      ],
+      "weight": 8,
+      "skipCondition": {"questionId": "R1", "minScore": 2},
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "Climate risks aren’t integrated into overall enterprise risk management (ERM).",
+      "recommendation": "Embed climate risk into existing ERM systems and controls.",
+      "relevantClause": "Paragraph 6(a)(iv) and paragraph 25—expect integration with enterprise-wide risk management."
+    },
+    {
+      "id": "R3",
+      "section": "Risk Management",
+      "question": "Has the organisation established processes for assessing and prioritising climate-related risks?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Informal assessment only", "score": 1},
+        {"label": "Partial formalisation", "score": 2},
+        {"label": "Fully formalised processes", "score": 3},
+        {"label": "Fully formalised and disclosed", "score": 4}
+      ],
+      "weight": 7,
+      "skipCondition": {"questionId": "R1", "minScore": 2},
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score<2 && weight<8", "urgency": "Medium"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "Processes to assess and prioritise climate risks are incomplete.",
+      "recommendation": "Establish criteria and thresholds to assess likelihood, severity and prioritisation of risks.",
+      "relevantClause": "Paragraph 25—assessing and prioritising climate-related risks."
+    },
+    {
+      "id": "R4",
+      "section": "Risk Management",
+      "question": "Are climate-related opportunities captured and managed through formal processes?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Informal capture only", "score": 1},
+        {"label": "Partial formalisation", "score": 2},
+        {"label": "Fully formalised processes", "score": 3},
+        {"label": "Fully formalised and disclosed", "score": 4}
+      ],
+      "weight": 6,
+      "skipCondition": {"questionId": "R1", "minScore": 2},
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score<2 && weight<8", "urgency": "Medium"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "Opportunities are not formally captured or managed.",
+      "recommendation": "Set processes to identify and manage climate opportunities with accountable owners.",
+      "relevantClause": "Paragraphs 10–11—disclosure of climate-related opportunities."
+    },
+    {
+      "id": "R5",
+      "section": "Risk Management",
+      "question": "Are climate-related risks monitored, reviewed, and updated on a regular basis?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Ad hoc monitoring only", "score": 1},
+        {"label": "Partial regular monitoring", "score": 2},
+        {"label": "Fully regular monitoring", "score": 3},
+        {"label": "Fully regular monitoring and disclosed", "score": 4}
+      ],
+      "weight": 7,
+      "skipCondition": {"questionId": "R1", "minScore": 2},
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score<2 && weight<8", "urgency": "Medium"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "Ongoing monitoring and review of climate risks is ad hoc.",
+      "recommendation": "Define monitoring cadence, triggers and controls; report results to management and board.",
+      "relevantClause": "Paragraph 25(c)—monitoring and reviewing risks."
+    },
+    {
+      "id": "M1",
+      "section": "Metrics & Targets",
+      "question": "Are Scope 1 and Scope 2 GHG emissions measured in line with recognised standards?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Partial measurement", "score": 1},
+        {"label": "Fully measured (no external disclosure)", "score": 2},
+        {"label": "Fully measured and disclosed", "score": 3},
+        {"label": "Third-party assured and disclosed", "score": 4}
+      ],
+      "weight": 9,
+      "skipCondition": null,
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "Scope 1 and/or Scope 2 emissions are not measured per recognised standards.",
+      "recommendation": "Calculate these emissions using GHG Protocol and document results.",
+      "relevantClause": "Pillar category “Metrics and targets”—requires disclosure of Scope 1 and 2 emissions."
+    },
+    {
+      "id": "M2",
+      "section": "Metrics & Targets",
+      "question": "Are Scope 3 GHG emissions measured and reported?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Some categories measured", "score": 1},
+        {"label": "Most categories measured", "score": 2},
+        {"label": "Fully measured and disclosed", "score": 3},
+        {"label": "Third-party assured and disclosed", "score": 4}
+      ],
+      "weight": 8,
+      "skipCondition": {"questionId": "M1", "minScore": 2},
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "Scope 3 emissions aren’t measured or reported.",
+      "recommendation": "Conduct a materiality-based Scope 3 inventory and report findings.",
+      "relevantClause": "Pillar “Metrics and targets” – includes Scope 3 disclosure obligations."
+    },
+    {
+      "id": "M3",
+      "section": "Metrics & Targets",
+      "question": "Has the organisation set climate-related targets consistent with AASB S2 requirements?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Preliminary targets only", "score": 1},
+        {"label": "Targets set (not disclosed)", "score": 2},
+        {"label": "Targets set and disclosed", "score": 3},
+        {"label": "Targets externally assured", "score": 4}
+      ],
+      "weight": 8,
+      "skipCondition": {"questionId": "M1", "minScore": 2},
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "Climate-related targets haven’t been set or disclosed.",
+      "recommendation": "Set measurable emissions or climate impact targets and disclose them publicly.",
+      "relevantClause": "Paragraphs 33–36—expect disclosure of climate-related targets and progress tracking."
+    },
+    {
+      "id": "M4",
+      "section": "Metrics & Targets",
+      "question": "Are climate-related metrics tracked and reported internally on a regular basis?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Ad hoc tracking only", "score": 1},
+        {"label": "Partial regular tracking", "score": 2},
+        {"label": "Fully regular tracking", "score": 3},
+        {"label": "Fully regular tracking and disclosed", "score": 4}
+      ],
+      "weight": 7,
+      "skipCondition": {"questionId": "M1", "minScore": 2},
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score<2 && weight<8", "urgency": "Medium"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "Internal tracking of climate metrics is not regular or systematic.",
+      "recommendation": "Implement periodic KPI tracking and dashboards aligned to disclosed metrics.",
+      "relevantClause": "Paragraphs 27–31—metrics used to manage and monitor performance."
+    },
+    {
+      "id": "M5",
+      "section": "Metrics & Targets",
+      "question": "Are climate-related targets externally assured or verified?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Under consideration", "score": 1},
+        {"label": "Partial assurance", "score": 2},
+        {"label": "Full assurance", "score": 3},
+        {"label": "Full assurance and disclosed", "score": 4}
+      ],
+      "weight": 6,
+      "skipCondition": {"questionId": "M3", "minScore": 2},
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score<2 && weight<8", "urgency": "Medium"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "Targets are not externally validated or assured.",
+      "recommendation": "Engage an independent assurer to verify target methodologies and performance.",
+      "relevantClause": "Paragraphs 35–36—disclose target measurement methods and monitoring (assurance recommended)."
+    },
+    {
+      "id": "M6",
+      "section": "Metrics & Targets",
+      "question": "Are climate-related performance metrics integrated into financial reporting?",
+      "answers": [
+        {"label": "Not started", "score": 0},
+        {"label": "Under consideration", "score": 1},
+        {"label": "Partial integration", "score": 2},
+        {"label": "Fully integrated", "score": 3},
+        {"label": "Fully integrated and disclosed", "score": 4}
+      ],
+      "weight": 7,
+      "skipCondition": {"questionId": "M1", "minScore": 2},
+      "urgencyRules": [
+        {"condition": "score<2 && weight>=8", "urgency": "High"},
+        {"condition": "score<2 && weight<8", "urgency": "Medium"},
+        {"condition": "score==2", "urgency": "Medium"},
+        {"condition": "score>=3", "urgency": "Low"}
+      ],
+      "gapDescription": "Climate metrics are not integrated into financial reporting.",
+      "recommendation": "Integrate material climate metrics into financial reporting processes and controls.",
+      "relevantClause": "Paragraph 14—financial effects disclosure and linkage to financial statements."
+    }
+  ],
+  "metadata": {
+    "title": "AASB S2 Climate Readiness Questionnaire",
+    "version": "1.0",
+    "description": "Comprehensive assessment of organisational readiness for AASB S2 climate-related financial disclosure requirements",
+    "sections": [
+      {
+        "id": "governance",
+        "title": "Governance",
+        "description": "Board oversight and management accountability for climate-related risks and opportunities"
+      },
+      {
+        "id": "strategy", 
+        "title": "Strategy",
+        "description": "Integration of climate-related risks and opportunities into business strategy and financial planning"
+      },
+      {
+        "id": "risk",
+        "title": "Risk Management", 
+        "description": "Processes for identifying, assessing, and managing climate-related risks and opportunities"
+      },
+      {
+        "id": "metrics",
+        "title": "Metrics & Targets",
+        "description": "Measurement, tracking, and disclosure of climate-related metrics and targets"
+      }
+    ],
+    "scoring": {
+      "description": "0-4 maturity scoring system",
+      "levels": [
+        {"score": 0, "description": "Not started"},
+        {"score": 1, "description": "Initial/planning stage"},
+        {"score": 2, "description": "Partial implementation"},
+        {"score": 3, "description": "Fully implemented (internal)"},
+        {"score": 4, "description": "Fully implemented (external disclosure)"}
+      ]
+    },
+    "urgency": {
+      "description": "Priority levels for dashboard display",
+      "levels": [
+        {"level": "High", "description": "Critical gaps requiring immediate attention"},
+        {"level": "Medium", "description": "Important areas needing improvement"},
+        {"level": "Low", "description": "Well-managed areas"}
+      ]
+    }
+  }
+}
+
+
