@@ -33,8 +33,13 @@ export default function Export() {
         setEligibility(storage.getDisclosureEligibility());
       }
     };
+    const onLocalQuestionnaire = () => setAnswers(storage.getQuestionnaire());
     window.addEventListener('storage', onStorage);
-    return () => window.removeEventListener('storage', onStorage);
+    window.addEventListener('questionnaire:updated', onLocalQuestionnaire as EventListener);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('questionnaire:updated', onLocalQuestionnaire as EventListener);
+    };
   }, []);
 
   const formatGroup = (g: any) => {
@@ -93,14 +98,18 @@ export default function Export() {
   const handleExport = async () => {
     try {
       const origin = window.location.origin;
+      // Always send the latest data from storage to avoid stale state
+      const payloadCompany = storage.getCompanyProfile() || company;
+      const payloadClassification = storage.getClassification() || classification;
+      const payloadAnswers = storage.getQuestionnaire() || answers;
       const resp = await fetch('http://localhost:8787/api/export/pdf', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           sections: selectedSections,
-          company,
-          classification,
-          answers,
+          company: payloadCompany,
+          classification: payloadClassification,
+          answers: payloadAnswers,
           origin
         })
       });

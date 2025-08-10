@@ -50,10 +50,19 @@ app.post('/api/export/pdf', async (req, res) => {
             if (answers) localStorage.setItem('questionnaireAnswers', JSON.stringify(answers));
           } catch {}
         }, { company, classification, answers });
+        // Ensure app knows storage changed in this context
+        await page.evaluate(() => {
+          try {
+            window.dispatchEvent(new CustomEvent('questionnaire:updated'));
+            window.dispatchEvent(new StorageEvent('storage', { key: 'companyProfileData' }));
+            window.dispatchEvent(new StorageEvent('storage', { key: 'classificationResult' }));
+            window.dispatchEvent(new StorageEvent('storage', { key: 'questionnaireAnswers' }));
+          } catch {}
+        });
         // Now navigate to the print route with the requested sections
         const tryUrl = `${originCandidate}/print?sections=${encodeURIComponent(JSON.stringify(ensuredSections))}`;
         await page.goto(tryUrl, { waitUntil: 'domcontentloaded' });
-        await page.waitForSelector('.cover-page, .print-section', { timeout: 15000 });
+        await page.waitForSelector('.cover-page, .print-section', { timeout: 20000 });
         navigated = true;
         break;
       } catch (navErr) {
