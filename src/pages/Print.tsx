@@ -52,7 +52,7 @@ export default function Print() {
 
       {sections.includes('responses') && (
         <section className="print-section section">
-          <h2 className="text-xl font-semibold mb-2">Question Responses</h2>
+          <h2 className="text-xl font-semibold mb-2" style={{ pageBreakAfter: 'avoid' }}>Question Responses</h2>
           <table className="w-full text-sm border-collapse">
             <thead>
               <tr className="border-b"><th className="text-left p-2">ID</th><th className="text-left p-2">Question</th><th className="text-left p-2">Answer</th><th className="text-left p-2">Score</th><th className="text-left p-2">Clause</th></tr>
@@ -85,8 +85,7 @@ export default function Print() {
               const badgeClass = g.priority === 'High' ? 'badge-high' : g.priority === 'Medium' ? 'badge-medium' : 'badge-low';
               return (
                 <div key={g.id} className="gap-card border rounded-lg shadow-sm p-4 bg-white" style={{ breakInside: 'avoid' }}>
-                  <div className="flex items-start justify-between gap-3">
-                    <h3 className="font-semibold text-brand-navy leading-snug">{g.question}</h3>
+                  <div className="flex items-start justify-end gap-3">
                     <span className={`text-xs px-2 py-0.5 rounded-full whitespace-nowrap ${badgeClass}`}>{g.priority}</span>
                   </div>
                   <div className="mt-2 text-sm text-foreground">
