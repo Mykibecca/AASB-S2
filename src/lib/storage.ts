@@ -23,7 +23,6 @@ export interface UserData {
   classification: {
     group: number | 'not-required';
     reportingStart: string; // legacy key
-    assuranceRequired: boolean;
     reasoning: string[];
     // New fields for 2025 scope logic
     inScope?: boolean;

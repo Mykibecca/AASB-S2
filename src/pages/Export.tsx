@@ -142,7 +142,7 @@ export default function Export() {
               { label: 'Employees', value: company?.employees || 'N/A' },
               { label: 'AASB S2 Group', value: formatGroup(classification?.group) },
               { label: 'Reporting Start', value: classification?.reportingStart || 'N/A' },
-              { label: 'Assurance', value: classification ? (classification.assuranceRequired ? 'Required' : 'Not Required') : 'N/A' },
+              
               { label: 'Generated', value: new Date().toLocaleDateString() }
             ].map((item, idx) => (
               <div key={idx}>

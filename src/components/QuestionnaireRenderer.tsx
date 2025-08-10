@@ -35,7 +35,6 @@ const SPECIALIZED_TERMS: Record<string, string> = {
   "value chain": "The full range of activities involved in creating and delivering a product or service, from suppliers to end customers.",
   "financial impact": "The monetary effects of climate-related risks and opportunities on the organisation's financial position and performance.",
   "climate resilience": "The ability of an organisation to anticipate, prepare for, and adapt to climate-related changes and disruptions.",
-  "assurance": "Independent verification that climate-related disclosures are accurate, complete, and reliable.",
   "targets": "Specific, measurable goals for reducing emissions or improving climate performance over defined time periods.",
   "metrics": "Quantifiable measures used to track and report on climate-related performance and progress.",
   "governance": "The systems and processes for overseeing climate-related risks and opportunities at board and management levels.",
@@ -122,7 +121,6 @@ export default function QuestionnaireRenderer(_: Props) {
   useEffect(() => {
     const saved = storage.getQuestionnaire();
     if (saved) setAnswers(saved);
-    const company = storage.getCompanyProfile() || {};
     const classification = storage.getClassification();
     // Build applicability profile or block if missing
     if (!classification || !classification.group) {
@@ -130,14 +128,7 @@ export default function QuestionnaireRenderer(_: Props) {
     } else {
       const entityGroup = (classification.group === 'not-required' ? 'voluntary' : classification.group) as ApplicabilityProfile["entityGroup"];
       const firstReportingFY = classification.reportingStart || "";
-      // Default assurance profile if missing: none
-      const assuranceProfile = {
-        governance: classification.assuranceRequired ? 'limited' : 'none',
-        strategy: 'none',
-        risk: 'none',
-        metrics: classification.assuranceRequired ? 'limited' : 'none',
-      } as ApplicabilityProfile["assuranceProfile"];
-      setProfile({ entityGroup, firstReportingFY, assuranceProfile });
+      setProfile({ entityGroup, firstReportingFY });
     }
   }, []);
 
@@ -218,7 +209,7 @@ export default function QuestionnaireRenderer(_: Props) {
     return (
       <div className="max-w-2xl mx-auto py-12 text-center">
         <h2 className="text-2xl font-semibold">Complete Applicability First</h2>
-        <p className="text-muted-foreground mt-2">We need your entity group, first reporting FY, and assurance profile before starting the assessment.</p>
+        <p className="text-muted-foreground mt-2">We need your entity group and first reporting FY before starting the assessment.</p>
       </div>
     );
   }

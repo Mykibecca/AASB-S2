@@ -250,9 +250,10 @@ export default function ReadinessCheck() {
       storage.saveClassification({
         group: result.inScope ? (result.classificationGroup as 1 | 2 | 3) : 'not-required',
         reportingStart: result.mandatoryStartDate,
-        assuranceRequired: false,
         reasoning: result.reasoning,
         inScope: result.inScope,
+        classificationGroup: result.inScope ? result.classificationGroup : 'voluntary',
+        mandatoryReportingStartDate: result.mandatoryStartDate,
       } as any);
     }
   }, [answers]);

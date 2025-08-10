@@ -22,12 +22,6 @@ export default function Print() {
   const profile: ApplicabilityProfile | null = classification ? {
     entityGroup: (classification.group === 'not-required' ? 'voluntary' : classification.group),
     firstReportingFY: classification.reportingStart || '',
-    assuranceProfile: {
-      governance: classification.assuranceRequired ? 'limited' : 'none',
-      strategy: 'none',
-      risk: 'none',
-      metrics: classification.assuranceRequired ? 'limited' : 'none',
-    },
   } as ApplicabilityProfile : null;
 
   const scoring = useMemo(() => profile ? scoreAnswers(answers, profile) : null, [answers, profile]);

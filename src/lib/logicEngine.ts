@@ -6,12 +6,10 @@ import data from "./aasbS2.json";
 export type GapSeverity = 0 | 1 | 2 | 3 | 4; // Updated to 0-4 scale
 
 export type EntityGroup = 1 | 2 | 3 | "voluntary";
-export type AssuranceType = "reasonable" | "limited" | "none";
 
 export interface ApplicabilityProfile {
   entityGroup: EntityGroup;
   firstReportingFY: string; // YYYY
-  assuranceProfile: Record<string, AssuranceType>; // sectionId -> assurance type
 }
 
 export interface SkipCondition {
@@ -136,16 +134,9 @@ export function getGroupMultiplier(group: EntityGroup): number {
   return 0.6; // voluntary
 }
 
-export function getAssuranceMultiplier(sectionId: string, profile: ApplicabilityProfile): number {
-  const t = profile.assuranceProfile[sectionId] || "none";
-  if (t === "reasonable") return 1.3;
-  if (t === "limited") return 1.1;
-  return 1.0;
-}
-
 export function computeUrgencyWeight(question: QuestionDef, profile: ApplicabilityProfile): number {
   const sectionId = question.section.toLowerCase().replace(/\s+/, '');
-  return question.weight * getGroupMultiplier(profile.entityGroup) * getAssuranceMultiplier(sectionId, profile);
+  return question.weight * getGroupMultiplier(profile.entityGroup);
 }
 
 export function isQuestionVisible(question: QuestionDef, answers: AnswersMap, profile: ApplicabilityProfile): { visible: boolean; enforced?: { na?: boolean; severity?: GapSeverity } } {

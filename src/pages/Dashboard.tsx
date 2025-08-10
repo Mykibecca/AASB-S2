@@ -45,13 +45,7 @@ export default function Dashboard() {
     const classification = userData.classification;
     if (!classification) return { overallProgress: 0, answeredQuestions: 0, gapsCount: 0 };
     const entityGroup = (classification.group === 'not-required' ? 'voluntary' : classification.group) as ApplicabilityProfile["entityGroup"];
-    const assuranceProfile = {
-      governance: classification.assuranceRequired ? 'limited' : 'none',
-      strategy: 'none',
-      risk: 'none',
-      metrics: classification.assuranceRequired ? 'limited' : 'none',
-    } as ApplicabilityProfile["assuranceProfile"];
-    const profile: ApplicabilityProfile = { entityGroup, firstReportingFY: classification.reportingStart || '', assuranceProfile };
+    const profile: ApplicabilityProfile = { entityGroup, firstReportingFY: classification.reportingStart || '' };
     const scoring = scoreAnswers(userData.questionnaire as any, profile);
     const totalVisible = scoring.visibleQuestionIds.size;
     const answeredVisible = Array.from(scoring.visibleQuestionIds).filter(id => {
@@ -153,10 +147,7 @@ export default function Dashboard() {
                 <Calendar className="w-4 h-4 text-green-600" />
                 <span>Reporting Start: {userData.classification.reportingStart}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-green-600" />
-                <span>Assurance: {userData.classification.assuranceRequired ? 'Required' : 'Not Required'}</span>
-              </div>
+              
             </div>
           </CardContent>
         </Card>

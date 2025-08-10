@@ -30,13 +30,7 @@ export default function ReadinessDashboard() {
     const classification = storage.getClassification();
     if (classification) {
       const entityGroup = (classification.group === 'not-required' ? 'voluntary' : classification.group) as ApplicabilityProfile["entityGroup"];
-      const assuranceProfile = {
-        governance: classification.assuranceRequired ? 'limited' : 'none',
-        strategy: 'none',
-        risk: 'none',
-        metrics: classification.assuranceRequired ? 'limited' : 'none',
-      } as ApplicabilityProfile["assuranceProfile"];
-      setProfile({ entityGroup, firstReportingFY: classification.reportingStart || '', assuranceProfile });
+      setProfile({ entityGroup, firstReportingFY: classification.reportingStart || '' });
     }
   }, []);
 
@@ -111,9 +105,9 @@ export default function ReadinessDashboard() {
                       <li key={gap.id} className="px-4 py-3 text-sm">
                         <div className="flex items-center justify-between">
                           <div className="font-medium">{gap.clause}: {gap.question}</div>
-                          <div className="flex items-center gap-2">
-                            <Badge variant={gap.urgency === 'High' ? 'destructive' : gap.urgency === 'Medium' ? 'default' : 'secondary'}>{gap.urgency}</Badge>
-                          </div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant={gap.priority === 'High' ? 'destructive' : gap.priority === 'Medium' ? 'default' : 'secondary'}>{gap.priority}</Badge>
+                        </div>
                         </div>
                         {gap.gapDescription && (
                           <div className="text-muted-foreground mt-1"><span className="font-medium">Gap:</span> {gap.gapDescription}</div>
